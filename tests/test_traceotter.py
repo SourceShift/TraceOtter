@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import subprocess
+import sys
 from pathlib import Path
 
 from traceotter.adapters import parse_file
@@ -70,6 +72,7 @@ def test_pipeline_exports_llamafactory(tmp_path: Path) -> None:
     assert Path(report["episodePath"]).exists()
     assert Path(report["skillPath"]).exists()
     assert Path(report["llamafactory"]["dataset"]).exists()
+    assert report["llamafactory"]["train_command"].startswith("llamafactory-cli train ")
     dataset = json.loads(Path(report["llamafactory"]["dataset"]).read_text(encoding="utf-8"))
     config = Path(report["llamafactory"]["config"]).read_text(encoding="utf-8")
     assert dataset
@@ -102,3 +105,44 @@ def test_export_includes_useful_partial_episodes(tmp_path: Path) -> None:
     dataset = json.loads(Path(result["dataset"]).read_text(encoding="utf-8"))
     assert len(dataset) == 1
     assert "focused verification not recorded" in dataset[0]["output"]
+
+
+def test_distill_cli_accepts_generic_jsonl_root(tmp_path: Path) -> None:
+    root = tmp_path / "history"
+    out = tmp_path / "out"
+    root.mkdir()
+    (root / "rollout-demo.jsonl").write_text(
+        "\n".join(
+            json.dumps(row)
+            for row in [
+                {"timestamp": "2026-01-01T00:00:00Z", "type": "turn_context", "payload": {"cwd": "/repo/app"}},
+                {"timestamp": "2026-01-01T00:00:01Z", "type": "response_item", "payload": {"role": "user", "content": "Fix a CLI bug"}},
+                {"timestamp": "2026-01-01T00:00:02Z", "type": "response_item", "payload": {"role": "assistant", "content": "Plan, inspect with rg, edit, and run pytest tests/test_cli.py"}},
+                {"timestamp": "2026-01-01T00:00:03Z", "type": "response_item", "payload": {"role": "assistant", "content": "final: fixed"}},
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "traceotter.cli",
+            "--json",
+            "distill",
+            "--jsonl",
+            str(root),
+            "--out",
+            str(out),
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    payload = json.loads(completed.stdout)
+    assert payload["ok"] is True
+    assert payload["episodes"] == 1
+    assert Path(payload["llamafactory"]["dataset"]).exists()

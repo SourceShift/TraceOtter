@@ -16,7 +16,7 @@ from .exporters import export_llamafactory
 def main() -> int:
     parser = argparse.ArgumentParser(
         prog="traceotter",
-        description="Train small coding agents from Codex, Claude, and mini-ork traces.",
+        description="Distill JSONL coding-agent history into small-model training artifacts.",
     )
     parser.add_argument("--json", action="store_true", help="Emit stable JSON output")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -45,6 +45,12 @@ def main() -> int:
     p_pipe.add_argument("--out", required=True, type=Path)
     p_pipe.add_argument("--limit-files", type=int)
     p_pipe.add_argument("--max-events-per-file", type=int)
+
+    p_distill = sub.add_parser("distill", help="Engineer-friendly alias for JSONL history -> skills -> LLaMA-Factory")
+    _add_roots(p_distill)
+    p_distill.add_argument("--out", required=True, type=Path)
+    p_distill.add_argument("--limit-files", type=int)
+    p_distill.add_argument("--max-events-per-file", type=int)
 
     args = parser.parse_args()
     if args.cmd == "doctor":
@@ -78,20 +84,21 @@ def main() -> int:
                 )
         result = export_llamafactory(episodes, skills, args.out, args.dataset_name)
         return _emit(args, {"ok": True, **result})
-    if args.cmd == "pipeline":
+    if args.cmd in {"pipeline", "distill"}:
         report = run_pipeline(_roots_from_args(args), args.out, args.limit_files, args.max_events_per_file)
         return _emit(args, {"ok": True, **report})
     raise AssertionError(args.cmd)
 
 
 def _add_roots(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument("--jsonl", action="append", type=Path, default=[], help="Generic JSONL history root or file")
     parser.add_argument("--codex", action="append", type=Path, default=[], help="Codex session root or JSONL file")
     parser.add_argument("--claude", action="append", type=Path, default=[], help="Claude project root or JSONL file")
     parser.add_argument("--mini-ork", action="append", type=Path, default=[], help="mini-ork run root or artifact file")
 
 
 def _roots_from_args(args: argparse.Namespace) -> list[Path]:
-    return [*args.codex, *args.claude, *args.mini_ork]
+    return [*args.jsonl, *args.codex, *args.claude, *args.mini_ork]
 
 
 def _episodes_from_jsonl(path: Path) -> list[Episode]:

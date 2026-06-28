@@ -28,12 +28,14 @@ def export_llamafactory(episodes: list[Episode], skills: list[Skill], out_dir: P
         }
     }
     write_json(out_dir / "dataset_info.json", dataset_info)
-    (out_dir / "llamafactory_sft.yaml").write_text(_simple_yaml(_llamafactory_config(dataset_name)), encoding="utf-8")
+    config_path = out_dir / "llamafactory_sft.yaml"
+    config_path.write_text(_simple_yaml(_llamafactory_config(dataset_name)), encoding="utf-8")
     return {
         "dataset": str(data_path),
         "dataset_info": str(out_dir / "dataset_info.json"),
-        "config": str(out_dir / "llamafactory_sft.yaml"),
+        "config": str(config_path),
         "examples": str(len(examples)),
+        "train_command": f"llamafactory-cli train {config_path}",
     }
 
 

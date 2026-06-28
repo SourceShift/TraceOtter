@@ -36,6 +36,15 @@ TraceOtter is the missing glue. It uses:
 traceotter --json doctor
 ```
 
+Engineer-friendly distillation from generic JSONL history:
+
+```bash
+traceotter --json distill \
+  --jsonl /path/to/jsonl/history \
+  --out .traceotter/local \
+  --limit-files 500
+```
+
 Normalize local traces:
 
 ```bash

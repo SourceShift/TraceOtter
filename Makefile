@@ -1,4 +1,4 @@
-.PHONY: doctor test smoke
+.PHONY: doctor test distill-smoke smoke
 
 doctor:
 	python -m traceotter.cli --json doctor
@@ -16,3 +16,9 @@ smoke:
 		--limit-files 10 \
 		--max-events-per-file 2000
 
+distill-smoke:
+	python -m traceotter.cli --json distill \
+		--jsonl /Users/admin/.codex/sessions \
+		--out /tmp/traceotter-distill-smoke \
+		--limit-files 10 \
+		--max-events-per-file 2000

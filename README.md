@@ -1,7 +1,7 @@
 # TraceOtter
 
-TraceOtter turns local coding-agent trajectories into training data for a
-small coding model.
+TraceOtter helps engineers train a small coding model from their own JSONL
+coding-agent history.
 
 It starts with the practical path:
 
@@ -24,7 +24,19 @@ python -m pip install -e ".[dev]"
 traceotter --json doctor
 ```
 
-## Prepare Local Data
+## Distill JSONL History
+
+Use the engineer-friendly command when you have one or more folders of JSONL
+history:
+
+```bash
+traceotter --json distill \
+  --jsonl /path/to/jsonl/history \
+  --out .traceotter/local \
+  --limit-files 500
+```
+
+TraceOtter also has source-specific adapters:
 
 ```bash
 traceotter --json pipeline \
@@ -48,6 +60,9 @@ Generated files:
     dataset_info.json
     llamafactory_sft.yaml
 ```
+
+See [docs/ENGINEER_WORKFLOW.md](docs/ENGINEER_WORKFLOW.md) for the practical
+workflow from private history to first small-model training run.
 
 ## Train With LLaMA-Factory
 
