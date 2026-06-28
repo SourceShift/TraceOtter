@@ -90,6 +90,13 @@ TraceOtter uses the LLaMA-Factory `qwen3_nothink` template by default. See
 - LLaMA-Factory is the first trainer.
 - Agent-R1/verl is deliberately deferred until a stable evaluator/reward model exists.
 
+## Roadmap
+
+TraceOtter's next work is tracked under [docs/roadmap](docs/roadmap/README.md).
+The priority order is evaluator, dataset quality gates, training automation,
+public-data mixing, richer distillation targets, reward/RL prep, then OSS
+readiness.
+
 ## Verify
 
 ```bash
