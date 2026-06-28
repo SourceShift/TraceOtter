@@ -61,8 +61,11 @@ llamafactory-cli train .traceotter/local/llamafactory/llamafactory_sft.yaml
 The default first model is:
 
 ```text
-Qwen/Qwen2.5-Coder-1.5B-Instruct
+Qwen/Qwen3-4B-Instruct-2507
 ```
+
+TraceOtter uses the LLaMA-Factory `qwen3_nothink` template by default. See
+[docs/MODELS.md](docs/MODELS.md) for the model ladder and upgrade rules.
 
 ## Design References
 
@@ -85,4 +88,3 @@ python -m traceotter.cli --json doctor
 Local trajectories can contain private prompts, repository paths, code, and
 secrets. TraceOtter redacts obvious token patterns, but exported datasets should
 stay private until reviewed.
-

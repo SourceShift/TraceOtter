@@ -75,7 +75,8 @@ def test_pipeline_exports_llamafactory(tmp_path: Path) -> None:
     assert dataset
     assert dataset[0]["instruction"].startswith("Given this coding-agent task")
     assert config.startswith("stage: sft\n")
-    assert "model_name_or_path: Qwen/Qwen2.5-Coder-1.5B-Instruct\n" in config
+    assert "model_name_or_path: Qwen/Qwen3-4B-Instruct-2507\n" in config
+    assert "template: qwen3_nothink\n" in config
 
 
 def test_export_includes_useful_partial_episodes(tmp_path: Path) -> None:

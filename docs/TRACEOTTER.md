@@ -111,11 +111,20 @@ llamafactory-cli train .traceotter/local/llamafactory/llamafactory_sft.yaml
 Default base model:
 
 ```text
-Qwen/Qwen2.5-Coder-1.5B-Instruct
+Qwen/Qwen3-4B-Instruct-2507
 ```
 
-This is intentionally small enough for early local or modest GPU experiments.
-Increase model size only after the replay evaluator shows the dataset is clean.
+This keeps the project on the Qwen3 training/template path while remaining
+small enough for early local or modest GPU experiments. Increase model size only
+after the replay evaluator shows the dataset is clean.
+
+Next larger target:
+
+```text
+Qwen/Qwen3-Coder-30B-A3B-Instruct
+```
+
+See `docs/MODELS.md` for the full model-selection rule.
 
 ## Public Bootstrap Data
 
@@ -137,4 +146,3 @@ reviewed.
 
 Do not train directly on raw transcripts. Train on normalized, redacted,
 deduplicated, and labeled episodes.
-
