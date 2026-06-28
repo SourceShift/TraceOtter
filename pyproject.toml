@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "traceotter"
+version = "0.1.0"
+description = "Train small coding agents from Codex, Claude, and mini-ork trajectory JSONL."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+authors = [
+  { name = "TraceOtter contributors" }
+]
+keywords = [
+  "coding-agents",
+  "trajectory-distillation",
+  "llamafactory",
+  "procedural-memory",
+  "small-language-models"
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: Software Development :: Code Generators"
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0"
+]
+train = [
+  "datasets>=2.20",
+  "transformers>=4.45",
+  "accelerate>=0.33",
+  "peft>=0.12"
+]
+
+[project.scripts]
+traceotter = "traceotter.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["traceotter*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
